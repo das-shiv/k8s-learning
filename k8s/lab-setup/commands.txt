@@ -1,0 +1,40 @@
+K8S-Commands:
+----------------
+
+./create-cluster.sh
+./delete-cluster.sh
+
+------------------------
+# Add these aliases in ~/.bashrc file, and run command,
+source ~/.bashrc
+
+# ===== Kubernetes Aliases =====
+
+# kubectl shortcut
+alias k="kubectl"
+
+# Get resources
+alias kgp="kubectl get pods"
+alias kgn="kubectl get nodes"
+alias kgs="kubectl get svc"
+alias kgd="kubectl get deployments"
+alias kga="kubectl get all"
+
+# Wide output
+alias kgpw="kubectl get pods -o wide"
+
+# Describe resources
+alias kdp="kubectl describe pod"
+alias kdn="kubectl describe node"
+alias kdd="kubectl describe deployment"
+
+# Logs
+alias kl="kubectl logs"
+alias klf="kubectl logs -f"
+
+# Exec into pod
+alias ke="kubectl exec -it"
+
+# Apply / Delete
+alias ka="kubectl apply -f"
+alias kd="kubectl delete -f"

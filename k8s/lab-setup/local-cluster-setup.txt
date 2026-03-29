@@ -1,0 +1,92 @@
+Kubernetes Local Setup (WSL + Kind)
+
+1.  Environment Overview 
+    Windows -> WSL2 (Ubuntu) -> Docker -> Kind ->
+    kubectl -> VS Code
+
+2.  Install WSL Run in PowerShell: wsl –install
+
+3.  Update Ubuntu 
+    sudo apt update && sudo apt upgrade -y 
+    sudo apt install -y curl git apt-transport-https ca-certificates
+
+4.  Install Docker 
+    curl -fsSL https://get.docker.com | sudo bash 
+    sudo usermod -aG docker $USER exit
+
+Verify: docker ps
+
+5.  Install kubectl 
+    curl -LO https://dl.k8s.io/release/stable.txt 
+    sudo install kubectl /usr/local/bin/kubectl
+
+6.  Install Kind 
+    curl -Lo kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 
+    chmod +x kind
+    sudo mv kind /usr/local/bin/
+
+7.  Create Project 
+    mkdir -p ~/learning/k8s/k8s-lab 
+    cd ~/learning/k8s/k8s-lab
+
+8.  kind-cluster.yaml 
+
+    kind: Cluster apiVersion: kind.x-k8s.io/v1alpha4
+    name: dev-cluster nodes:
+
+-   role: control-plane
+-   role: worker
+-   role: worker
+
+9.  create-cluster.sh 
+    
+#!/bin/bash
+
+echo "Creating Kubernetes cluster..."
+
+kind create cluster --config kind-cluster.yaml
+
+echo ""
+echo "Cluster created successfully"
+echo ""
+
+kubectl cluster-info --context kind-dev-cluster
+
+echo ""
+echo "Cluster nodes:"
+kubectl get nodes
+
+
+10. delete-cluster.sh 
+
+#!/bin/bash
+
+echo "Deleting Kubernetes cluster..."
+
+kind delete cluster --name dev-cluster
+
+echo "Cluster deleted"
+
+
+
+11. Commands 
+
+Create: ./create-cluster.sh
+
+Delete: ./delete-cluster.sh
+
+Verify: kubectl get nodes docker ps
+
+
+
+12. VS Code cd ~/learning/k8s/k8s-lab code .
+
+13. Aliases alias k=“kubectl” alias kgp=“kubectl get pods” alias
+    kgn=“kubectl get nodes”
+
+14. Monitoring htop docker stats
+
+15. Test App 
+    kubectl create deployment nginx –image=nginx 
+    kubectl scale deployment nginx –replicas=3 
+    kubectl get pods -o wide
