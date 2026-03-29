@@ -68,25 +68,33 @@ kind delete cluster --name dev-cluster
 echo "Cluster deleted"
 
 
+11. add start-cluster.sh
 
-11. Commands 
+12. add stop-cluster.sh
+
+
+13. Commands 
 
 Create: ./create-cluster.sh
 
 Delete: ./delete-cluster.sh
 
+Start: ./start-cluster.sh
+
+Stop: ./stop-cluster.sh
+
 Verify: kubectl get nodes docker ps
 
 
 
-12. VS Code cd ~/learning/k8s/k8s-lab code .
+14. VS Code cd ~/learning/k8s/k8s-lab code .
 
-13. Aliases alias k=“kubectl” alias kgp=“kubectl get pods” alias
+15. Aliases alias k=“kubectl” alias kgp=“kubectl get pods” alias
     kgn=“kubectl get nodes”
 
-14. Monitoring htop docker stats
+16. Monitoring htop docker stats
 
-15. Test App 
+17. Test App 
     kubectl create deployment nginx –image=nginx 
     kubectl scale deployment nginx –replicas=3 
     kubectl get pods -o wide
