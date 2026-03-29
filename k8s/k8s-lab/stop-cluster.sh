@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CLUSTER_NAME="dev-cluster"
+CLUSTER_NAME="k8s-cluster"
 
 CONTAINERS=$(docker ps --filter "name=${CLUSTER_NAME}" -q)
 
