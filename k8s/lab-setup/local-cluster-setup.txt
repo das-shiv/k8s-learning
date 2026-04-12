@@ -1,100 +1,82 @@
-Kubernetes Local Setup (WSL + Kind)
+Kubernetes Local Setup (Linux + Kind)
 
-1.  Environment Overview 
-    Windows -> WSL2 (Ubuntu) -> Docker -> Kind ->
-    kubectl -> VS Code
+1.  Environment Overview
+    Linux -> Docker -> Kind -> kubectl -> VS Code
 
-2.  Install WSL Run in PowerShell: wsl –install
-
-3.  Update Ubuntu 
-    sudo apt update && sudo apt upgrade -y 
+2.  Update your system
+    sudo apt update && sudo apt upgrade -y
     sudo apt install -y curl git apt-transport-https ca-certificates
 
-4.  Install Docker 
-    curl -fsSL https://get.docker.com | sudo bash 
-    sudo usermod -aG docker $USER exit
+3.  Install Docker
+    curl -fsSL https://get.docker.com | sudo bash
+    sudo usermod -aG docker $USER
+    newgrp docker
 
     Verify: docker ps
 
-5.  Install kubectl 
-    curl -LO https://dl.k8s.io/release/stable.txt 
-    sudo install kubectl /usr/local/bin/kubectl
+4.  Install kubectl
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-6.  Install Kind 
-    curl -Lo kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 
+5.  Install Kind
+    curl -Lo kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
     chmod +x kind
     sudo mv kind /usr/local/bin/
 
-7.  Create Project 
-    mkdir -p ~/learning/k8s/k8s-lab 
+6.  Create the project directory
+    mkdir -p ~/learning/k8s/k8s-lab
     cd ~/learning/k8s/k8s-lab
 
-8.  kind-cluster.yaml 
+7.  kind-cluster.yaml
+    kind: Cluster
+    apiVersion: kind.x-k8s.io/v1alpha4
+    name: k8s-cluster
 
-    kind: Cluster apiVersion: kind.x-k8s.io/v1alpha4
-    name: dev-cluster nodes:
+    nodes:
+    - role: control-plane
+    - role: worker
+    - role: worker
 
--   role: control-plane
--   role: worker
--   role: worker
+8.  Start or create the cluster
+    ./cluster-up.sh
+    Note: this script will start Docker if it is not already running.
 
-9.  create-cluster.sh 
-    
-#!/bin/bash
+9.  Stop the cluster without deleting it
+    ./cluster-down.sh
+    Note: this script will start Docker if needed, stop the cluster containers, and then stop Docker.
 
-echo "Creating Kubernetes cluster..."
+10. Destroy the cluster completely
+    ./delete-cluster.sh
+    Note: this script will start Docker if needed, delete the Kind cluster, and then stop Docker.
 
-kind create cluster --config kind-cluster.yaml
+11. Verify the cluster
+    kubectl config use-context kind-k8s-cluster
+    kubectl get nodes
+    docker ps
 
-echo ""
-echo "Cluster created successfully"
-echo ""
+12.  Open the project in VS Code
+    cd ~/learning/k8s/k8s-lab
+    code .
 
-kubectl cluster-info --context kind-dev-cluster
+13.  Useful aliases (add to ~/.bashrc and run source ~/.bashrc)
+    alias k="kubectl"
+    alias kgp="kubectl get pods"
+    alias kgn="kubectl get nodes"
+    alias kgs="kubectl get svc"
+    alias kgd="kubectl get deployments"
+    alias kga="kubectl get all"
+    alias kgpw="kubectl get pods -o wide"
+    alias kdp="kubectl describe pod"
+    alias kdn="kubectl describe node"
+    alias kdd="kubectl describe deployment"
+    alias kl="kubectl logs"
+    alias klf="kubectl logs -f"
+    alias ke="kubectl exec -it"
+    alias ka="kubectl apply -f"
+    alias kd="kubectl delete -f"
 
-echo ""
-echo "Cluster nodes:"
-kubectl get nodes
-
-
-10. delete-cluster.sh 
-
-#!/bin/bash
-
-echo "Deleting Kubernetes cluster..."
-
-kind delete cluster --name dev-cluster
-
-echo "Cluster deleted"
-
-
-11. add start-cluster.sh
-
-12. add stop-cluster.sh
-
-
-13. Commands 
-
-Create: ./create-cluster.sh
-
-Delete: ./delete-cluster.sh
-
-Start: ./start-cluster.sh
-
-Stop: ./stop-cluster.sh
-
-Verify: kubectl get nodes docker ps
-
-
-
-14. VS Code cd ~/learning/k8s/k8s-lab code .
-
-15. Aliases alias k=“kubectl” alias kgp=“kubectl get pods” alias
-    kgn=“kubectl get nodes”
-
-16. Monitoring htop docker stats
-
-17. Test App 
-    kubectl create deployment nginx –image=nginx 
-    kubectl scale deployment nginx –replicas=3 
+14.  Test app
+    kubectl create deployment nginx --image=nginx
+    kubectl scale deployment nginx --replicas=3
     kubectl get pods -o wide

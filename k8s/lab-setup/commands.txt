@@ -1,8 +1,9 @@
 K8S-Commands:
 ----------------
 
-./create-cluster.sh
-./delete-cluster.sh
+./cluster-up.sh      # create or start the Kind cluster
+./cluster-down.sh    # stop the Kind cluster and optionally stop Docker
+./delete-cluster.sh  # delete the Kind cluster
 
 ------------------------
 # Add these aliases in ~/.bashrc file, and run command,
